@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extract CCCD Information</title>
+</head>
+<body>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212; /* Màu nền giống hình */
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            width: 600px; /* Tăng độ rộng cho giống hình */
+            background-color: #1e1e1e; /* Màu nền cho container */
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .file-upload {
+            background-color: #2e2e2e;
+            border: 2px dashed #666; /* Khung nét đứt */
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .file-upload p {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .file-upload span {
+            font-size: 12px;
+            color: #aaa;
+        }
+
+        .browse-btn {
+            background-color: #444;
+            color: #ffffff;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .browse-btn:hover {
+            background-color: #666;
+        }
+
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #444;
+            color: #ffffff;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .submit-btn:hover {
+            background-color: #666;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        form label {
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: #aaa; /* Màu chữ nhạt hơn */
+        }
+
+        form input {
+            height: 40px; /* Chiều cao ô nhập liệu */
+            background-color: #2e2e2e; /* Màu nền ô nhập liệu */
+            border: none;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            padding: 5px 10px;
+            color: #ffffff; /* Màu chữ */
+            font-size: 14px;
+        }
+
+        form input:disabled {
+            opacity: 0.5; /* Làm mờ ô nhập liệu disabled */
+        }
+
+        form input:focus {
+            outline: 2px solid #555; /* Viền sáng khi focus */
+        }
+    </style>
+    <div class="container">
+        <h1>TRÍCH XUẤT THÔNG TIN TỪ CCCD</h1>
+        <div class="file-upload">
+            <div class="drag-drop-box" id="drop-area">
+                <p>Drag and drop file here</p>
+                <span>Limit 200MB per file - JPG, PNG, JPEG</span>
+                <button type="button" class="browse-btn" id="browse-btn">Browse files</button>
+                <input type="file" id="file-input" accept="image/png, image/jpeg, image/jpg" style="display: none;">
+            </div>
+            <p id="file-name" style="text-align: center; margin-top: 10px; color: #aaa;"></p>
+        </div>
+        
+        <button type="submit" class="submit-btn" id = "submit-btn">Submit</button>
+
+        <h2>Thông tin trích xuất:</h2>
+        <form>
+            <label for="id">ID</label>
+            <input type="text" id="id" name="id" disabled>
+
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" disabled>
+
+            <label for="dob">Date of Birth</label>
+            <input type="text" id="dob" name="dob" disabled>
+
+            <label for="sex">Sex</label>
+            <input type="text" id="sex" name="sex" disabled>
+
+            <label for="nationality">Nationality</label>
+            <input type="text" id="nationality" name="nationality" disabled>
+
+            <label for="origin">Place of Origin</label>
+            <input type="text" id="origin" name="origin" disabled>
+
+            <label for="residence">Place of Residence</label>
+            <input type="text" id="residence" name="residence" disabled>
+
+            <label for="expiry">Expiry</label>
+            <input type="text" id="expiry" name="expiry" disabled>
+        </form>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        const browseBtn = document.getElementById("browse-btn");
+        const fileInput = document.getElementById("file-input");
+        const fileNameDisplay = document.getElementById("file-name");
+        const submitBtn = document.getElementById("submit-btn");
+        browseBtn.addEventListener("click", () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener("change", (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                fileNameDisplay.textContent = `Selected file: ${file.name}`;
+            } else {
+                fileNameDisplay.textContent = "";
+            }
+        });
+
+        $('#submit-btn').click(function () {
+            var fileInput = document.querySelector('#file-input');
+            var file = fileInput.files[0];  
+
+            if (!file) {
+                alert("Please choose a file before submitting.");
+                return;
+            }
+
+            var formData = new FormData(); 
+            formData.append("file", file); 
+
+            $.ajax({
+                method: "POST",
+                url: "/predict", 
+                data: formData, 
+                processData: false, 
+                contentType: false, 
+                success: function (response) {
+                    if (response.result) {
+                        $('#id').val(response.result.ID);
+                        $('#name').val(response.result.Name);
+                        $('#dob').val(response.result['Date of Birth']);
+                        $('#sex').val(response.result.Sex);
+                        $('#nationality').val(response.result.Nationality);
+                        $('#origin').val(response.result['Place of Origin']);
+                        $('#residence').val(response.result['Place of Residence']);
+                        $('#expiry').val(response.result.Expiry);
+
+                        alert("Trích xuất thông tin thành công!");
+                    } else {
+                        alert("Không tìm thấy thông tin trong ảnh.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert("An error occurred: " + error);
+                    console.error(xhr, status, error);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

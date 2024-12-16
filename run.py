@@ -24,7 +24,7 @@ def predict():
         
         path_to_save = os.path.join(app.config['UPLOAD_FOLDER'], image.filename)
         image.save(path_to_save)
-        ocr_pipeline = FullPipelineOCR()
+        ocr_pipeline = FullPipelineOCR(model_path_4Corner="./weight/detectCorner.pt", model_path_textDet="./weight/detectText.pt")
         result = ocr_pipeline(path_to_save)
         if not (result is None): print(result)
         else: print("hehe") 

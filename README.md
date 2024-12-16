@@ -12,7 +12,7 @@ A web application for extracting information from Vietnamese's id card
 
 Download model [Download](https://drive.google.com/file/d/1_8KHwRZpm13FuETG5gF_IftCH209rQxh/view?usp=sharing)
 
-**Yêu cầu**
+**Requirements**
 
 Create Account [ngrok](https://ngrok.com/) get authtoken [authtoken](https://dashboard.ngrok.com/get-started/your-authtoken) to connect ngrok
 
